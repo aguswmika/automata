@@ -55,7 +55,7 @@ class NFA:
                         # maka akan mengeluarkan list/array dari state selanjutnya
                         # karena pada NFA kemungkinan state yang
                         # ditemukan berjumlah lebih dari satu
-                        return list(self.__transitionStates[state][symbol])
+                        return list(self.__transitionStates[state]['eps'])
 
         return []
 
@@ -75,15 +75,9 @@ class NFA:
         # suatu epsilon pada suatu transition function
         epsilon = False
 
-        # mengecek ketika suatu transition function
-        # sudah mencapai final state maka program
-        # akan mengembalikan nilai True
-        if self.__result == True:
-            return True
-
         # melakukan perulangan ketika posisi
         # string belum mencapai akhir
-        while pos != max_length:
+        while pos < max_length:
             # mengecek apakah jumlah dari state terkini
             # ada lebih dari satu state atau tidak
             if len(current) > 1:
@@ -96,6 +90,10 @@ class NFA:
                     # belum dicek dan nilai dari state
                     # yang telah dipecah sebelumnya
                     self.accept(string[pos:], state)
+                
+                # mengembalikan nilai dari propery result (nilai diterimanya string)
+                return self.__result
+
             # jika statenya berjumlah satu
             elif len(current) == 1:
                 # maka state akan disimpan pada variable temp
@@ -115,10 +113,9 @@ class NFA:
                     current = self.transitionEpsilon(temp)
 
                     # jika ditemukan state
-                    if len(current) > 0:
+                    if len(current):
                         # maka variable epsilon akan bernilai True
-                        epsilon = True
-            
+                        epsilon = True            
             # jika state bernilai kosong maka fungsi akan bernilai false
             else:
                 return False
@@ -134,7 +131,7 @@ class NFA:
                 epsilon = False
 
         # jika nilai state terkini lebih dari atau sama dengan satu
-        if len(current) >= 1:
+        if len(current):
             # maka selanjutnya mencari nilai dari final state dari state terkini
             for x in self.__finalStates:
                 for state in current:
@@ -226,6 +223,7 @@ elif pilihan == 3:
     # mendefinisikan tabel transition state
     nfa.setTransitionStates({
         "q0": {
+            "0": {"q0"},
             "1": {"q0", "q1"}
         },
         "q1": {
